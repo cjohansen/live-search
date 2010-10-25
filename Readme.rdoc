@@ -1,0 +1,40 @@
+FrontTrends 2010 Live coding example
+====================================
+
+<a href="http://cjohansen.no/en/javascript/fronttrends_2010">Read the post</a>.
+
+This sample jQuery plugin was originally live coded at FrontTrends 2010.
+The purpose was to show TDD in practice, and as such looking at this code
+will be nowhere as useful as actually watching the presentation where I gave
+some detailed explanations as to why and how I did the different things.
+
+The code itself is very crude - this is just the start of a plugin. Note that
+it does not do anything other than display a list of suggestions. No keyboard
+navigation, no ability to select suggestions, no nothing. As I said, this was
+only an example of how I use TDD to develop code - there is only so much you
+can show in an hour.
+
+To actually take the code for a spin, concatenate the source files like so:
+
+  cat client/lib/jquery.js client/src/list_renderer.js\
+        client/src/xhr_data_source.js client/src/live_search.js\
+        client/src/live_search.jquery.js > server/public/live-search.min.js
+
+Then run the server (you'll need Node.js)
+
+  ./run_server
+
+Then visit <a href="http://localhost:8000/">http://localhost:8000/</a> and type
+something in the search box. Suggestions should show up.
+
+I wish I could tell you that I took the time to TDD the server code as well, but
+unfortunately, it's a complete mess, and I only hacked it together in order to
+show the demo with some results. A bit ironic, as I never got the demo running
+at the presentation, since I forgot to include jquery when concatenating the files.
+Oh well, maybe you'll be luckier.
+
+To run the tests:
+
+  cd client && java -jar path/to/JsTestDriver-1.2.2.jar --tests all
+
+I recommend <a href="http://cjohansen.no/en/javascript/jstdutil_a_ruby_wrapper_over_jstestdriver">Jstdutil</a>, the tool I used during the talk to run the tests.
