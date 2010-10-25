@@ -1,7 +1,7 @@
 FrontTrends 2010 Live coding example
 ====================================
 
-<a href="http://cjohansen.no/en/javascript/fronttrends_2010">Read the post</a>.
+Read the post: http://cjohansen.no/en/javascript/fronttrends_2010
 
 This sample jQuery plugin was originally live coded at FrontTrends 2010.
 The purpose was to show TDD in practice, and as such looking at this code
@@ -24,8 +24,8 @@ Then run the server (you'll need Node.js)
 
   ./run_server
 
-Then visit <a href="http://localhost:8000/">http://localhost:8000/</a> and type
-something in the search box. Suggestions should show up.
+Then visit http://localhost:8000/ and type something in the search box.
+Suggestions should show up.
 
 I wish I could tell you that I took the time to TDD the server code as well, but
 unfortunately, it's a complete mess, and I only hacked it together in order to
@@ -37,4 +37,4 @@ To run the tests:
 
   cd client && java -jar path/to/JsTestDriver-1.2.2.jar --tests all
 
-I recommend <a href="http://cjohansen.no/en/javascript/jstdutil_a_ruby_wrapper_over_jstestdriver">Jstdutil</a>, the tool I used during the talk to run the tests.
+I recommend Jstdutil (http://cjohansen.no/en/javascript/jstdutil_a_ruby_wrapper_over_jstestdriver), the tool I used during the talk to run the tests.
