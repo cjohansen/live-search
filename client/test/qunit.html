@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+  <head>
+    <title>QUnit/Sinon.JS Live search test</title>
+    <link rel="stylesheet" href="../lib/qunit.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <h1 id="qunit-header">QUnit/Sinon.JS Live Search Test</h1>
+    <h2 id="qunit-banner"></h2>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <form action="/search" method="get" id="qunit-fixture">
+      <fieldset>
+        <input type="text" name="q">
+        <input type="submit" value="Go!">
+      </fieldset>
+    </form>
+    <script src="../lib/jquery.js"></script>
+    <script type="text/javascript" src="../lib/qunit.js"></script>
+    <script type="text/javascript" src="../lib/sinon-0.8.0.js"></script>
+    <script type="text/javascript" src="../lib/sinon-ie-0.8.0.js"></script>
+    <script type="text/javascript" src="../lib/sinon-qunit-0.8.0.js"></script>
+    <script type="text/javascript" src="../src/list_renderer.js"></script>
+    <script type="text/javascript" src="../src/live_search.js"></script>
+    <script type="text/javascript" src="../src/xhr_data_source.js"></script>
+    <script type="text/javascript" src="../src/live_search.jquery.js"></script>
+    <script type="text/javascript" src="qunit/list_renderer_test.js"></script>
+    <script type="text/javascript" src="qunit/live_search_test.js"></script>
+    <script type="text/javascript" src="qunit/xhr_data_source_test.js"></script>
+    <script type="text/javascript" src="qunit/live_search_functional_test.js"></script>
+  </body>
+</html>

@@ -1,5 +1,5 @@
 /**
- * Sinon.JS 0.7.1, 2010/10/16
+ * Sinon.JS 0.8.0, 2010/10/30
  *
  * @author Christian Johansen (christian@cjohansen.no)
  *
@@ -61,12 +61,23 @@ var sinon = (function () {
                             " as function");
       }
 
+      if (wrappedMethod.restore && wrappedMethod.restore.sinon) {
+        throw new TypeError("Attempted to wrap " + property + " which is already wrapped");
+      }
+
+      if (wrappedMethod.calledBefore) {
+        var verb = !!wrappedMethod.returns ? "stubbed" : "spied on";
+        throw new TypeError("Attempted to wrap " + property + " which is already " + verb);
+      }
+
       object[property] = method;
       method.displayName = property;
 
       method.restore = function () {
         object[property] = wrappedMethod;
       };
+
+      method.restore.sinon = true;
 
       return method;
     },
@@ -1065,6 +1076,40 @@ sinon.clock = (function () {
     return timers;
   }
 
+  function callbacksInRange(timeouts, from, to) {
+    var found, timer, tmp, i, l, timers = [], timeoutsCopy = {};
+
+    for (var prop in timeouts) {
+      timeoutsCopy[prop] = timeouts[prop];
+    }
+
+    while (timeoutsCopy && found !== 0) {
+      found = 0;
+      tmp = timersInRange(timeoutsCopy, from, to);
+
+      for (i = 0, l = tmp.length; i < l; i++) {
+        timer = tmp[i];
+
+        // Push a copy onto the call stack
+        timers.push({
+          func: timer.func,
+          callAt: timer.callAt,
+          interval: timer.interval,
+          id: timer.id
+        });
+
+        if (typeof timer.interval == "number") {
+          found += 1;
+          timer.callAt += timer.interval;
+        } else {
+          delete timeoutsCopy[timer.id];
+        }
+      }
+    }
+
+    return timers;
+  }
+
   function parseTime(str) {
     if (!str) {
       return 0;
@@ -1141,35 +1186,9 @@ sinon.clock = (function () {
 
     tick: function tick(ms) {
       ms = typeof ms == "number" ? ms : parseTime(ms);
-      var found, timer, prop, i, l;
       var tickFrom = this.now, tickTo = this.now + ms;
-      var tmp, timers = [];
 
-      while (this.timeouts && found !== 0) {
-        found = 0;
-        tmp = timersInRange(this.timeouts, tickFrom, tickTo);
-
-        for (i = 0, l = tmp.length; i < l; i++) {
-          timer = tmp[i];
-
-          // Push a copy onto the call stack
-          timers.push({
-            func: timer.func,
-            callAt: timer.callAt,
-            interval: timer.interval,
-            id: timer.id
-          });
-
-          if (typeof timer.interval == "number") {
-            found += 1;
-            timer.callAt += timer.interval;
-          } else {
-            delete this.timeouts[prop];
-          }
-        }
-      }
-
-      timers = timers.sort(function (a, b) {
+      var timers = callbacksInRange(this.timeouts, tickFrom, tickTo).sort(function (a, b) {
         return a.callAt < b.callAt ? -1 : (a.callAt > b.callAt ? 1 : 0);
       });
 
@@ -1944,6 +1963,10 @@ if (typeof module == "object" && typeof require == "function") {
       }
 
       return obj;
+    },
+
+    create: function () {
+      return sinon.create(sinon.sandbox);
     }
   });
 
@@ -2024,19 +2047,20 @@ if (typeof module == "object" && typeof require == "function") {
       var config = getConfig();
       var sandbox = createSandbox(config);
       var exposed = sandbox.inject({});
-      var exception, result, prop;
+      var exception, result, prop, value;
       var args = Array.prototype.slice.call(arguments);
       var object = config.injectIntoThis && this || config.injectInto;
 
       if (config.properties) {
         for (var i = 0, l = config.properties.length; i < l; i++) {
           prop = config.properties[i];
+          value = exposed[prop] || prop == "sandbox" && sandbox
 
-          if (exposed[prop]) {
+          if (value) {
             if (object) {
-              object[prop] = exposed[prop];
+              object[prop] = value;
             } else {
-              args.push(exposed[config.properties[i]]);
+              args.push(value);
             }
           }
         }
