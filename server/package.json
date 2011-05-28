@@ -1,0 +1,9 @@
+{ "name" : "live-search"
+, "version" : "0.0.1"
+, "directories" : { "lib" : "./lib" }
+, "main" : "./lib/server"
+, "engines" : { "node" : "0.4 || 0.5" }
+, "dependencies" : 
+  { "express" : "2.2.2"
+  }
+}

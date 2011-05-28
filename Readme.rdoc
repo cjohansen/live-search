@@ -15,8 +15,10 @@ To actually take the code for a spin, concatenate the source files like so:
         client/src/xhr_data_source.js client/src/live_search.js\
         client/src/live_search.jquery.js > server/public/live-search.min.js
 
-Then run the server (you'll need Node.js)
+Then run the server (you'll need Node.js 0.4.8 or higher)
 
+  cd server
+  npm link
   ./run_server
 
 Then visit http://localhost:8000/ and type something in the search box.

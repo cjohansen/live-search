@@ -1,48 +1,38 @@
-var sys = require("sys");
-var http = require("http");
-var url = require("url");
-var paperboy = require("node-paperboy");
+var express = require("express");
 var movies = require("movies");
 
-sys.puts(movies.count() + " movies!");
+console.log(movies.count() + " movies!");
 
-module.exports = http.createServer(function (req, res) {
-  var parsedUrl = url.parse(req.url);
+module.exports = app = express.createServer();
 
-  if (parsedUrl.pathname == "/search") {
-    var q = parsedUrl.query.split("=")[1];
+app.configure(function(){
+  app.use(express.static(__dirname + '/../public'));
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+});
 
-    if (req.headers["x-requested-with"] == "XMLHttpRequest") {
-      var result = JSON.stringify(movies.find(q));
+app.get("/search", function(req, res) {
+  var q = req.param('q');
 
-      res.writeHead(200, {
-        "Content-Type": "application/json",
-        "Content-Length": result.length
-      });
-    } else {
-      var result = "<ol>";
+  if(req.xhr) {
+    var result = JSON.stringify(movies.find(q));
+    res.writeHead(200, {
+      "Content-Type": "application/json",
+      "Content-Length": result.length
+    });
+  } else {
+    var result = "<ol>";
 
-      for (var i = 0, l = items.length; i < l; i++) {
-        result += "<li>" + items[i] + "</li>";
-      }
-
-      result += "</ol>";
-
-      res.writeHead(200, {
-        "Content-Type": "text/html",
-        "Content-Length": result.length
-      });
+    for (var i = 0, l = items.length; i < l; i++) {
+      result += "<li>" + items[i] + "</li>";
     }
 
-    res.write(result);
-    res.end();
-  } else {
-    var delivery = paperboy.deliver("public", req, res);
+    result += "</ol>";
 
-    delivery.otherwise(function () {
-      res.writeHead(404, { "Content-Type": "text/html" });
-      res.write("<h1>Nothing to see here, move along</h1>");
-      res.end();
+    res.writeHead(200, {
+      "Content-Type": "text/html",
+      "Content-Length": result.length
     });
   }
+  res.write(result);
+  res.end();
 });
